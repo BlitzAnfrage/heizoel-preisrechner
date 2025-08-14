@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0ea5e9" />
+  <meta name="color-scheme" content="light dark" />
+  <title>{{JOB_TITEL}} – Jetzt in 60 Sekunden bewerben</title>
+  <meta name="description" content="Bewirb dich als {{JOB_TITEL}} bei {{FIRMENNAME}} in {{ORT}}. Faire Bezahlung, fester Arbeitsplatz, Top-Team. Bewerbung ohne Lebenslauf möglich." />
+  <!-- Open Graph / Social -->
+  <meta property="og:title" content="{{JOB_TITEL}} – Jetzt bewerben" />
+  <meta property="og:description" content="Sichere dir deinen neuen Job bei {{FIRMENNAME}} in {{ORT}}. Bewerbung in 60 Sekunden – ohne Lebenslauf." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="{{KANONISCHE_URL}}" />
+  <meta property="og:image" content="{{TEASER_BILD_URL}}" />
+  
+  <style>
+    /* ========================
+       Design-System (anpassbar)
+       ======================== */
+    :root{
+      --brand: #0ea5e9; /* Primärfarbe: anpassen (z.B. Firmenfarbe) */
+      --brand-2: color-mix(in srgb, var(--brand) 85%, black);
+      --accent: #22c55e;
+      --bg: #0b0c10;      /* Dark-Mode Hintergrund */
+      --bg-soft: #111318;
+      --text: #f6f7fb;
+      --muted: #a3adc2;
+      --danger: #ef4444;
+      --radius: 14px;
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+      --container: 980px;
+      --step-height: 64px;
+      --field-gap: 14px;
+    }
+
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg: #f8fafc;
+        --bg-soft: #ffffff;
+        --text: #0b1324;
+        --muted: #5b6476;
+        --shadow: 0 10px 24px rgba(2,6,23,.08);
+      }
+    }
+
+    html{ font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; color-scheme: light dark; }
+    body{ margin:0; background: var(--bg); color: var(--text); }
+    a{ color: inherit; text-decoration: none; }
+    img{ max-width:100%; height:auto; display:block; }
+    .container{ width:min(100% - 28px, var(--container)); margin-inline:auto; }
+    .card{ background: var(--bg-soft); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .pill{ border-radius:999px; padding:.35rem .7rem; font-weight:600; display:inline-flex; align-items:center; gap:.45rem; background: color-mix(in srgb, var(--brand) 16%, transparent); color: var(--brand); }
+    .btn{ appearance:none; border:none; border-radius: calc(var(--radius) - 6px); font-weight:700; padding: .95rem 1.1rem; cursor:pointer; transition: transform .04s ease, box-shadow .2s ease, opacity .2s ease; }
+    .btn:active{ transform: translateY(1px); }
+    .btn-primary{ background: linear-gradient(180deg, var(--brand), var(--brand-2)); color:white; box-shadow: 0 8px 20px color-mix(in srgb, var(--brand) 30%, transparent); }
+    .btn-outline{ background: transparent; outline:2px solid color-mix(in srgb, var(--brand) 45%, transparent); color: var(--brand); }
+    .btn-muted{ background: #e2e8f015; color: var(--muted); }
+    .btn-full{ width:100%; display:inline-flex; justify-content:center; align-items:center; gap:.55rem; }
+    .btn[disabled]{ opacity:.5; cursor:not-allowed; }
+
+    /* Header / Hero */
+    header.hero{ position:relative; padding: 22px 0 28px; background: radial-gradient(1200px 400px at 50% -200px, color-mix(in srgb, var(--brand) 18%, transparent), transparent 60%), linear-gradient(180deg, color-mix(in srgb, var(--brand) 12%, transparent), transparent 30%); }
+    .hero__bar{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .brand{ display:flex; align-items:center; gap:.75rem; font-weight:800; letter-spacing:.2px; }
+    .brand img{ width:38px; height:38px; border-radius:10px; object-fit:cover; }
+    .trust{ display:flex; gap:8px; align-items:center; font-size:.9rem; color:var(--muted); }
+
+    .hero__grid{ display:grid; grid-template-columns: 1fr; gap:18px; margin-top:18px; }
+    @media (min-width: 860px){ .hero__grid{ grid-template-columns: 1.05fr .95fr; align-items:center; } }
+
+    .hero__copy{ display:grid; gap:14px; }
+    .title{ font-weight:900; line-height:1.05; font-size: clamp(1.5rem, 2.4vw + 1rem, 2.3rem); }
+    .subtitle{ color: var(--muted); font-size: clamp(.98rem, .4vw + .9rem, 1.06rem); }
+    .hero__badges{ display:flex; flex-wrap:wrap; gap:8px; }
+
+    .hero__img{ border-radius: var(--radius); overflow:hidden; aspect-ratio: 16/11; background: #0e1117; position: relative; }
+    .hero__img img{ width:100%; height:100%; object-fit: cover; }
+
+    /* Sticky progress */
+    .progress-wrap{ position:sticky; top:0; z-index: 40; backdrop-filter: blur(10px); background: color-mix(in srgb, var(--bg) 80%, transparent); border-bottom: 1px solid #ffffff10; }
+    .progress{ height: 4px; background: #ffffff16; }
+    .progress__bar{ height:100%; width: 0%; background: var(--accent); transition: width .25s ease; }
+    .progress__steps{ display:flex; gap:8px; padding:8px 14px; font-size:.9rem; color: var(--muted); align-items:center; }
+    .progress__steps .dot{ width:8px; height:8px; border-radius:50%; background:#ffffff20; }
+    .progress__steps .dot.active{ background: var(--accent); }
+
+    /* Section blocks */
+    section{ padding: 26px 0; }
+
+    .features{ display:grid; gap:12px; grid-template-columns: 1fr; }
+    @media (min-width: 720px){ .features{ grid-template-columns: repeat(3, 1fr); } }
+    .feature{ padding:16px; border:1px solid #ffffff12; border-radius:var(--radius); background: #0e1117a6; }
+    .feature h3{ margin:0 0 6px; font-size:1rem; }
+    .feature p{ margin:0; color:var(--muted); font-size:.95rem; }
+
+    /* Jobdetails accordion */
+    details.job{ background: var(--bg-soft); border-radius: var(--radius); border: 1px solid #ffffff14; overflow:hidden; }
+    details.job > summary{ cursor:pointer; list-style:none; padding: 16px; font-weight:700; }
+    details.job > summary::-webkit-details-marker{ display:none; }
+    details.job[open] > summary{ border-bottom: 1px solid #ffffff14; }
+    details.job__grid{ display:grid; gap:16px; padding: 14px; }
+    @media (min-width: 780px){ .job__two{ grid-template-columns: 1fr 1fr; } }
+
+    /* Form */
+    .form{ display:grid; gap:16px; }
+    .step{ display:none; }
+    .step.active{ display:block; }
+    .fields{ display:grid; gap: var(--field-gap); }
+    .field{ display:grid; gap:8px; }
+    label{ font-weight:600; font-size:.95rem; }
+    input, select, textarea{ background:#0d1117; color: var(--text); border:1px solid #ffffff20; border-radius: 12px; padding: .9rem .95rem; font: inherit; }
+    input::placeholder, textarea::placeholder{ color:#aab2c3; }
+    small.help{ color: var(--muted); }
+    .error{ color: var(--danger); font-size:.9rem; display:none; }
+    .field.invalid .error{ display:block; }
+    .step__nav{ display:flex; gap:10px; }
+
+    .u-row{ display:flex; gap:10px; }
+    .u-row > *{ flex:1; }
+
+    .consent{ font-size:.9rem; color: var(--muted); }
+
+    /* Footers */
+    footer{ padding: 32px 0 60px; color: var(--muted); font-size:.95rem; }
+    .legal{ display:flex; flex-wrap:wrap; gap:10px; }
+
+    /* Floating CTA */
+    .floating-cta{ position: fixed; inset: auto 12px 12px 12px; z-index: 50; display:flex; gap:10px; }
+    @media (min-width: 760px){ .floating-cta{ inset:auto 22px 22px auto; } }
+
+    .hide{ display:none !important; }
+  </style>
+</head>
+<body>
+  <!-- Optional: Meta Pixel / GA placeholders -->
+  <script>
+    // Füge hier IDs ein (Meta Pixel, GA4). Events werden unten ausgelöst.
+    window.analytics = {
+      lead: (payload) => { console.debug("[track] lead", payload); /* hier Pixel/GA Event aufrufen */ },
+      submit: (payload) => { console.debug("[track] submit", payload); },
+      view: (payload) => { console.debug("[track] view", payload); },
+    };
+  </script>
+
+  <!-- Sticky Progress -->
+  <div class="progress-wrap">
+    <div class="progress" aria-hidden="true"><div class="progress__bar" id="progressBar"></div></div>
+    <div class="progress__steps container" id="progressDots" aria-live="polite"></div>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="container hero__bar">
+      <div class="brand">
+        <img src="{{LOGO_URL}}" alt="Logo {{FIRMENNAME}}" loading="lazy" />
+        <span>{{FIRMENNAME}}</span>
+      </div>
+      <div class="trust">
+        <span class="pill">⚡ Bewerbung in 60 Sek.</span>
+        <span class="pill">📍 {{ORT}} & Umgebung</span>
+        <span class="pill">✅ Unbefristet</span>
+      </div>
+    </div>
+
+    <div class="container hero__grid">
+      <div class="hero__copy">
+        <div class="pill">Wir suchen: <strong>{{JOB_TITEL}}</strong></div>
+        <h1 class="title">Sicherer Job im {{BRANCHE}} – <br />
+          <span style="color:var(--brand)">ohne Lebenslauf</span> bewerben</h1>
+        <p class="subtitle">Bei <strong>{{FIRMENNAME}}</strong> warten ein faires Gehalt, kurze Wege und ein Team, das zusammenhält. Klingt gut? Dann trag dich kurz ein – wir melden uns meist noch am selben Tag.</p>
+
+        <div class="hero__badges">
+          <div class="pill">💶 <strong>{{GEHALT_SPANNE}}</strong></div>
+          <div class="pill">🧰 Firmenfahrzeug möglich</div>
+          <div class="pill">🏝️ 30 Tage Urlaub</div>
+        </div>
+
+        <a href="#bewerben" class="btn btn-primary" style="width:max-content">Jetzt unverbindlich bewerben</a>
+      </div>
+
+      <div class="hero__img card">
+        <img src="{{TEASER_BILD_URL}}" alt="Team/Arbeitsalltag bei {{FIRMENNAME}}" loading="eager" />
+      </div>
+    </div>
+  </header>
+
+  <!-- BENEFITS / WHY US -->
+  <section>
+    <div class="container">
+      <div class="features">
+        <div class="feature">
+          <h3>✅ Faires Gehalt & Zuschläge</h3>
+          <p>Leistung zahlt sich aus: pünktlicher Lohn, Spesen, Weihnachts- und Urlaubsgeld.</p>
+        </div>
+        <div class="feature">
+          <h3>🕒 Geregelte Arbeitszeiten</h3>
+          <p>Planbare Einsätze – Überstunden werden bezahlt oder abgefeiert.</p>
+        </div>
+        <div class="feature">
+          <h3>👥 Starkes Team</h3>
+          <p>Kurze Wege, ehrer Umgang, Saar/Pfalz-Mentalität: Hand drauf.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOB DETAILS -->
+  <section>
+    <div class="container">
+      <details class="job" open>
+        <summary>🔎 Jobdetails & Aufgaben</summary>
+        <div class="details job__two job__grid">
+          <div>
+            <h4>Deine Aufgaben</h4>
+            <ul>
+              <li>{{AUFGABE_1}}</li>
+              <li>{{AUFGABE_2}}</li>
+              <li>{{AUFGABE_3}}</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Das bringst du mit</h4>
+            <ul>
+              <li>{{ANFORDERUNG_1}}</li>
+              <li>{{ANFORDERUNG_2}}</li>
+              <li>{{ANFORDERUNG_3}}</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Wir bieten</h4>
+            <ul>
+              <li>{{BENEFIT_1}}</li>
+              <li>{{BENEFIT_2}}</li>
+              <li>{{BENEFIT_3}}</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Rahmenbedingungen</h4>
+            <ul>
+              <li>Gehalt: {{GEHALT_SPANNE}}</li>
+              <li>Arbeitsort: {{ORT}}</li>
+              <li>Start: {{STARTTERMIN}}</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- FORM WRAPPER -->
+  <section id="bewerben">
+    <div class="container">
+      <div class="card" style="padding:16px;">
+        <h2 style="margin:0 0 10px">Bewerbung in 60 Sekunden</h2>
+        <p class="subtitle">Kein Lebenslauf nötig. Wir rufen dich an und klären alles in Ruhe.
+        </p>
+
+        <form id="applyForm" class="form" novalidate>
+
+          <!-- Step 1: Kontaktdaten -->
+          <section class="step active" data-step="1" aria-label="Schritt 1: Kontaktdaten">
+            <div class="fields">
+              <div class="field">
+                <label for="fname">Vorname*</label>
+                <input id="fname" name="vorname" placeholder="z. B. Alex" autocomplete="given-name" required />
+                <div class="error">Bitte Vorname angeben.</div>
+              </div>
+              <div class="field">
+                <label for="lname">Nachname*</label>
+                <input id="lname" name="nachname" placeholder="z. B. Müller" autocomplete="family-name" required />
+                <div class="error">Bitte Nachname angeben.</div>
+              </div>
+              <div class="u-row">
+                <div class="field">
+                  <label for="phone">Handy*</label>
+                  <input id="phone" name="telefon" inputmode="tel" placeholder="z. B. 0151 1234567" autocomplete="tel" required />
+                  <div class="error">Bitte gültige Telefonnummer angeben.</div>
+                </div>
+                <div class="field">
+                  <label for="zip">PLZ*</label>
+                  <input id="zip" name="plz" inputmode="numeric" pattern="^[0-9]{5}$" placeholder="z. B. 66111" required />
+                  <div class="error">Bitte 5-stellige PLZ angeben.</div>
+                </div>
+              </div>
+              <div class="field">
+                <label for="email">E‑Mail (optional)</label>
+                <input id="email" name="email" type="email" placeholder="dein@mail.de" autocomplete="email" />
+                <small class="help">Wir nutzen E‑Mail nur, wenn wir dich telefonisch nicht erreichen.</small>
+              </div>
+            </div>
+            <div class="step__nav">
+              <button class="btn btn-primary btn-full" data-next>Weiter</button>
+            </div>
+          </section>
+
+          <!-- Step 2: Erfahrung / Quali -->
+          <section class="step" data-step="2" aria-label="Schritt 2: Erfahrung">
+            <div class="fields">
+              <div class="field">
+                <label for="role">Berufsrichtung*</label>
+                <select id="role" name="rolle" required>
+                  <option value="" selected disabled>Bitte wählen…</option>
+                  <option>Elektriker (m/w/d)</option>
+                  <option>SHK / Anlagenmechaniker (m/w/d)</option>
+                  <option>Dachdecker (m/w/d)</option>
+                  <option>Maler/Lackierer (m/w/d)</option>
+                  <option>Schreiner (m/w/d)</option>
+                  <option>Anderes Gewerk</option>
+                </select>
+                <div class="error">Bitte Berufsrichtung wählen.</div>
+              </div>
+              <div class="u-row">
+                <div class="field">
+                  <label for="exp">Berufserfahrung*</label>
+                  <select id="exp" name="erfahrung" required>
+                    <option value="" selected disabled>Bitte wählen…</option>
+                    <option>Ausbildung</option>
+                    <option>1–2 Jahre</option>
+                    <option>3–5 Jahre</option>
+                    <option>6+ Jahre</option>
+                  </select>
+                  <div class="error">Bitte auswählen.</div>
+                </div>
+                <div class="field">
+                  <label for="license">Führerschein*</label>
+                  <select id="license" name="fuehrerschein" required>
+                    <option value="" selected disabled>Bitte wählen…</option>
+                    <option>Ja, Klasse B</option>
+                    <option>Ja, anderer</option>
+                    <option>Nein</option>
+                  </select>
+                  <div class="error">Bitte auswählen.</div>
+                </div>
+              </div>
+              <div class="field">
+                <label for="skills">Stärken / Zertifikate (optional)</label>
+                <textarea id="skills" name="skills" rows="3" placeholder="z. B. Kundendienst, Wärmepumpen, PV, MSR…"></textarea>
+              </div>
+            </div>
+            <div class="step__nav">
+              <button class="btn btn-muted btn-full" data-prev>Zurück</button>
+              <button class="btn btn-primary btn-full" data-next>Weiter</button>
+            </div>
+          </section>
+
+          <!-- Step 3: Verfügbarkeit / Rahmen -->
+          <section class="step" data-step="3" aria-label="Schritt 3: Rahmenbedingungen">
+            <div class="fields">
+              <div class="u-row">
+                <div class="field">
+                  <label for="start">Start*</label>
+                  <select id="start" name="start" required>
+                    <option value="" selected disabled>Bitte wählen…</option>
+                    <option>Sofort</option>
+                    <option>Innerhalb 4 Wochen</option>
+                    <option>Ab Datum</option>
+                  </select>
+                  <div class="error">Bitte Start angeben.</div>
+                </div>
+                <div class="field">
+                  <label for="salary">Gehaltswunsch (brutto/Monat)</label>
+                  <input id="salary" name="gehalt" inputmode="numeric" placeholder="z. B. 3200" />
+                </div>
+              </div>
+              <div class="field">
+                <label for="notes">Kurz etwas zu dir (optional)</label>
+                <textarea id="notes" name="notizen" rows="3" placeholder="Was ist dir wichtig?"></textarea>
+              </div>
+            </div>
+            <div class="step__nav">
+              <button class="btn btn-muted btn-full" data-prev>Zurück</button>
+              <button class="btn btn-primary btn-full" data-next>Weiter</button>
+            </div>
+          </section>
+
+          <!-- Step 4: Upload / Kontaktweg -->
+          <section class="step" data-step="4" aria-label="Schritt 4: Anhänge & Kontakt">
+            <div class="fields">
+              <div class="field">
+                <label for="cv">Lebenslauf / Zeugnisse (optional)</label>
+                <input id="cv" name="cv" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
+                <small class="help">Du kannst dich auch ohne Unterlagen bewerben.</small>
+              </div>
+              <div class="u-row">
+                <button type="button" class="btn btn-outline btn-full" id="whatsappBtn">Mit WhatsApp fortfahren</button>
+                <button type="button" class="btn btn-outline btn-full" id="callBtn">Telefonischer Rückruf</button>
+              </div>
+            </div>
+            <div class="step__nav">
+              <button class="btn btn-muted btn-full" data-prev>Zurück</button>
+              <button class="btn btn-primary btn-full" data-next>Weiter</button>
+            </div>
+          </section>
+
+          <!-- Step 5: Einwilligung & Absenden -->
+          <section class="step" data-step="5" aria-label="Schritt 5: Einwilligung">
+            <div class="fields">
+              <div class="field">
+                <label class="consent">
+                  <input type="checkbox" id="privacy" required />
+                  Ich bin mit der Verarbeitung meiner Daten zum Zweck der Bewerbung einverstanden und habe die <a href="{{DATENSCHUTZ_URL}}" target="_blank" rel="noopener">Datenschutzhinweise</a> gelesen.
+                </label>
+                <div class="error">Bitte Datenschutz-Einwilligung bestätigen.</div>
+              </div>
+              <input type="hidden" name="utm_source" id="utm_source" />
+              <input type="hidden" name="utm_campaign" id="utm_campaign" />
+              <input type="hidden" name="utm_medium" id="utm_medium" />
+              <input type="hidden" name="job_titel" value="{{JOB_TITEL}}" />
+              <input type="hidden" name="firma" value="{{FIRMENNAME}}" />
+            </div>
+            <div class="step__nav">
+              <button class="btn btn-muted btn-full" data-prev>Zurück</button>
+              <button class="btn btn-primary btn-full" type="submit">Bewerbung absenden</button>
+            </div>
+          </section>
+
+        </form>
+
+        <!-- Thank You Screen -->
+        <div id="thankyou" class="hide">
+          <h3>Danke! Deine Bewerbung ist eingegangen. 👋</h3>
+          <p>Wir melden uns in Kürze telefonisch. Schau bitte, dass du erreichbar bist.</p>
+          <div class="u-row">
+            <a class="btn btn-outline btn-full" href="https://wa.me/{{WHATSAPP_NUMMER}}?text=Hi%2C%20ich%20hab%20gerade%20beworben%20als%20{{JOB_TITEL}}">Per WhatsApp nachfragen</a>
+            <a class="btn btn-primary btn-full" href="tel:{{TELEFON_NUMMER}}">Jetzt anrufen</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section>
+    <div class="container">
+      <details class="job">
+        <summary>❓ Häufige Fragen</summary>
+        <div class="details job__grid">
+          <div>
+            <h4>Brauche ich einen Lebenslauf?</h4>
+            <p>Nein. Eine Kurz-Bewerbung reicht. Wenn vorhanden, kannst du Unterlagen hochladen.</p>
+          </div>
+          <div>
+            <h4>Wie schnell meldet ihr euch?</h4>
+            <p>In der Regel innerhalb von 24 Stunden – oft noch am selben Tag.</p>
+          </div>
+          <div>
+            <h4>Ist die Stelle unbefristet?</h4>
+            <p>Ja, wir suchen langfristige Team-Verstärkung.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- Footer / Rechtliches -->
+  <footer>
+    <div class="container">
+      <div class="legal">
+        <a href="{{IMPRESSUM_URL}}">Impressum</a>
+        <span>•</span>
+        <a href="{{DATENSCHUTZ_URL}}">Datenschutz</a>
+        <span>•</span>
+        <a href="mailto:{{KONTAKT_MAIL}}">Kontakt</a>
+      </div>
+      <p style="margin-top:8px">© <span id="year"></span> {{FIRMENNAME}}. Alle Rechte vorbehalten.</p>
+    </div>
+  </footer>
+
+  <!-- Floating CTA -->
+  <div class="floating-cta">
+    <a class="btn btn-primary btn-full" href="#bewerben">Jetzt in 60 Sek. bewerben</a>
+    <a class="btn btn-outline btn-full" href="tel:{{TELEFON_NUMMER}}">Anrufen</a>
+  </div>
+
+  <!-- JSON-LD: JobPosting (SEO) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "JobPosting",
+    "title": "{{JOB_TITEL}}",
+    "description": "{{JOB_BESCHREIBUNG_KURZ}}",
+    "hiringOrganization": {
+      "@type": "Organization",
+      "name": "{{FIRMENNAME}}",
+      "logo": "{{LOGO_URL}}"
+    },
+    "employmentType": "FULL_TIME",
+    "datePosted": "{{DATUM_YYYY_MM_DD}}",
+    "validThrough": "{{GUELTIG_BIS_YYYY_MM_DD}}",
+    "jobLocation": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "{{ORT}}",
+        "postalCode": "{{PLZ}}",
+        "addressRegion": "{{BUNDESLAND}}",
+        "addressCountry": "DE"
+      }
+    },
+    "baseSalary": {
+      "@type": "MonetaryAmount",
+      "currency": "EUR",
+      "value": {
+        "@type": "QuantitativeValue",
+        "minValue": {{GEHALT_MIN}},
+        "maxValue": {{GEHALT_MAX}},
+        "unitText": "MONTH"
+      }
+    }
+  }
+  </script>
+
+  <!-- App Script -->
+  <script>
+  (function(){
+    const qs = (s, el=document) => el.querySelector(s);
+    const qsa = (s, el=document) => [...el.querySelectorAll(s)];
+    const form = qs('#applyForm');
+    const steps = qsa('.step');
+    const progressBar = qs('#progressBar');
+    const dotsWrap = qs('#progressDots');
+    const thankyou = qs('#thankyou');
+
+    const STATE_KEY = 'funnel_state_v1';
+    const ENDPOINT = '{{FORM_ENDPOINT}}'; // z.B. n8n / Make / Zapier / eigener Endpoint
+    const WHATSAPP = '{{WHATSAPP_NUMMER}}';
+
+    // Init progress dots
+    function renderDots(){
+      dotsWrap.innerHTML = '';
+      steps.forEach((_, i) => {
+        const d = document.createElement('div');
+        d.className = 'dot';
+        dotsWrap.appendChild(d);
+      });
+    }
+
+    function setStep(index){
+      steps.forEach((s, i)=>{
+        s.classList.toggle('active', i === index);
+      });
+      const pct = ((index) / (steps.length-1)) * 100;
+      progressBar.style.width = pct + '%';
+      qsa('.dot', dotsWrap).forEach((d,i)=> d.classList.toggle('active', i <= index));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      persist();
+    }
+
+    function next(){
+      const idx = currentIndex();
+      if (!validateStep(steps[idx])) return;
+      if (idx < steps.length-1) setStep(idx+1);
+    }
+
+    function prev(){
+      const idx = currentIndex();
+      if (idx > 0) setStep(idx-1);
+    }
+
+    function currentIndex(){
+      return steps.findIndex(s => s.classList.contains('active'));
+    }
+
+    function validateStep(step){
+      let ok = true;
+      qsa('[required]', step).forEach(input =>{
+        const field = input.closest('.field') || input.parentElement;
+        let valid = input.value.trim().length > 0;
+        if (input.id === 'zip') valid = /^[0-9]{5}$/.test(input.value.trim());
+        if (input.type === 'email' && input.value){
+          valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
+        }
+        if (input.type === 'checkbox') valid = input.checked;
+        field?.classList.toggle('invalid', !valid);
+        ok = ok && valid;
+      });
+      return ok;
+    }
+
+    function serialize(){
+      const fd = new FormData(form);
+      const data = Object.fromEntries(fd.entries());
+      data.timestamp = new Date().toISOString();
+      data.page = location.href;
+      return data;
+    }
+
+    function persist(){
+      const data = serialize();
+      localStorage.setItem(STATE_KEY, JSON.stringify(data));
+      // keep step index
+      localStorage.setItem(STATE_KEY+':step', currentIndex());
+    }
+
+    function restore(){
+      try{
+        const raw = localStorage.getItem(STATE_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        Object.entries(data).forEach(([k,v])=>{
+          const el = qs(`[name="${k}"]`);
+          if (!el) return;
+          if (el.type === 'checkbox') el.checked = !!v;
+          else if (el.type !== 'file') el.value = v;
+        });
+        const idx = +localStorage.getItem(STATE_KEY+':step') || 0;
+        setStep(Math.min(idx, steps.length-1));
+      }catch(e){ console.warn('restore failed', e); }
+    }
+
+    // UTM parsing for tracking
+    function parseUTM(){
+      const p = new URLSearchParams(location.search);
+      ['utm_source','utm_medium','utm_campaign'].forEach(key =>{
+        const val = p.get(key);
+        if (val) qs('#'+key).value = val;
+      });
+    }
+
+    // Phone formatting (simple)
+    qs('#phone').addEventListener('input', e=>{
+      let v = e.target.value.replace(/[^0-9+]/g,'');
+      e.target.value = v.replace(/(\+?\d{2})(\d{3,})(\d{4,})/, "$1 $2 $3");
+    });
+
+    // WhatsApp / Call shortcuts
+    qs('#whatsappBtn').addEventListener('click', ()=>{
+      const name = (qs('#fname').value || '') + ' ' + (qs('#lname').value || '');
+      const txt = encodeURIComponent(`Hi, ich bin ${name.trim()} und interessiere mich für die Stelle {{JOB_TITEL}}.`);
+      const url = `https://wa.me/${WHATSAPP}?text=${txt}`;
+      window.open(url, '_blank');
+    });
+    qs('#callBtn').addEventListener('click', ()=>{
+      location.href = 'tel:{{TELEFON_NUMMER}}';
+    });
+
+    // Navigation events
+    qsa('[data-next]').forEach(b=> b.addEventListener('click', (e)=>{ e.preventDefault(); next(); }));
+    qsa('[data-prev]').forEach(b=> b.addEventListener('click', (e)=>{ e.preventDefault(); prev(); }));
+
+    // Submit
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      if (!validateStep(steps[steps.length-1])) return;
+      const data = serialize();
+
+      // Build payload for webhook
+      const body = new FormData();
+      Object.entries(data).forEach(([k,v])=> body.append(k, v));
+      const file = qs('#cv').files?.[0];
+      if (file) body.append('cv', file, file.name);
+
+      try{
+        if (ENDPOINT && ENDPOINT.startsWith('http')){
+          await fetch(ENDPOINT, { method: 'POST', body });
+        }
+      }catch(err){ console.warn('Submit failed (offline demo?)', err); }
+
+      // Tracking hooks
+      window.analytics.lead(data);
+      window.analytics.submit(data);
+
+      // UI: thank you
+      form.classList.add('hide');
+      thankyou.classList.remove('hide');
+      localStorage.removeItem(STATE_KEY);
+    });
+
+    // Boot
+    renderDots();
+    setStep(0);
+    parseUTM();
+    restore();
+    qs('#year').textContent = new Date().getFullYear();
+    window.analytics.view({ page: location.pathname });
+  })();
+  </script>
+</body>
+</html>
